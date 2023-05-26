@@ -1,29 +1,28 @@
 package com.spring.jwt.SpringAppWithJwt.services;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import com.spring.jwt.SpringAppWithJwt.repository.UserRepository;
+import lombok.var;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
+
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
+    private final UserRepository userRepository;
+    @Autowired
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        List<SimpleGrantedAuthority> roles = null;
-        if(username.equals("admin")){
-            roles = Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-            return new User("admin","$2y$12$I0Di/vfUL6nqwVbrvItFVOXA1L9OW9kLwe.1qDPhFzIJBpWl76PAe",roles);
+        var user = userRepository.findByUsername(username);
+        if (user == null){
+            throw new UsernameNotFoundException("Username not found in database");
         }
-        else if(username.equals("user"))
-        {
-            roles = Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
-            return new User("user", "$2y$12$VfZTUu/Yl5v7dAmfuxWU8uRfBKExHBWT1Iqi.s33727NoxHrbZ/h2",
-                    roles);
-        }
-        throw new UsernameNotFoundException("User not found with username: " + username);
+        return user.get();
     }
 }

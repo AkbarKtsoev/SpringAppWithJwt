@@ -1,5 +1,6 @@
 package com.spring.jwt.SpringAppWithJwt.controllers;
 
+import com.spring.jwt.SpringAppWithJwt.responseObjects.AuthenticationRequest;
 import com.spring.jwt.SpringAppWithJwt.responseObjects.AuthenticationResponse;
 import com.spring.jwt.SpringAppWithJwt.responseObjects.RegistrationRequest;
 import com.spring.jwt.SpringAppWithJwt.services.AuthenticationService;
@@ -22,6 +23,11 @@ public class JwtAuthenticationController {
         return ResponseEntity.ok(authenticationService.registration(regreq));
 
     }
+    @PostMapping("/authentication")
+    public ResponseEntity<AuthenticationResponse> authenticationUser(@RequestBody AuthenticationRequest authreq){
+        return ResponseEntity.ok(authenticationService.authentication(authreq));
+    }
+
 
 
 }

@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegistrationRequest {
-    private String username;
-    private String password;
-    private String role;
+public class EventRequest {
+     String name;
+     Integer date;
+     Integer amountOfTickets;
+     Double ticketPrice;
 }
