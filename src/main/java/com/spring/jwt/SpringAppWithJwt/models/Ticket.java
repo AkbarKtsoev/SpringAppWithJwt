@@ -23,8 +23,8 @@ public class Ticket {
     private Event event;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "consumer_id",referencedColumnName = "id")
-    private Consumer owner;
+    @JoinColumn(name = "employee_id",referencedColumnName = "id")
+    private Employee owner;
     @Column(name = "price")
     private double price;
 }

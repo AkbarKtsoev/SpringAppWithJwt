@@ -18,4 +18,5 @@ public class EventResponse {
     String eventName;
     LocalDateTime localDateTime;
     int freeTickets;
+    int allTickets;
 }

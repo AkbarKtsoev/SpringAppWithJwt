@@ -1,7 +1,7 @@
 package com.spring.jwt.SpringAppWithJwt.services;
 
-import com.spring.jwt.SpringAppWithJwt.repository.UserRepository;
-import lombok.var;
+import com.spring.jwt.SpringAppWithJwt.exceptionObjects.UserNotFoundException;
+import com.spring.jwt.SpringAppWithJwt.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,17 +12,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    private final UserRepository userRepository;
+    private final EmployeeRepository employeeRepository;
     @Autowired
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomUserDetailsService(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
     }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var user = userRepository.findByUsername(username);
-        if (user == null){
-            throw new UsernameNotFoundException("Username not found in database");
-        }
-        return user.get();
+        return  employeeRepository.findByUsername(username)
+                .orElseThrow(() ->new UserNotFoundException("Username not found exception"));
+
     }
 }

@@ -1,5 +1,7 @@
 package com.spring.jwt.SpringAppWithJwt.filter;
 
+import com.spring.jwt.SpringAppWithJwt.models.Employee;
+import com.spring.jwt.SpringAppWithJwt.repository.EmployeeRepository;
 import com.spring.jwt.SpringAppWithJwt.services.CustomUserDetailsService;
 import com.spring.jwt.SpringAppWithJwt.utils.JwtTokenService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
     private static final String AUTHORIZATION = "Authorization";
     private final JwtTokenService jwtTokenService;
+    private final EmployeeRepository employeeRepository;
 
     private final CustomUserDetailsService customUserDetailsService;
     @Override
@@ -37,24 +40,26 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
         jwtToken = token.substring(7);
-        username = jwtTokenService.getUsernameFromToken(jwtToken);
+        username = jwtTokenService.getAccessClaims(jwtToken).getSubject();
 
 
         if (null != username && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-            if (jwtTokenService.validationToken(jwtToken)) {
+            Employee employee = (Employee) customUserDetailsService.loadUserByUsername(username);
+
+            if (jwtTokenService.validateAccessToken(jwtToken) && employee.getJwtRefreshToken() == jwtToken) {
                 // Проверка и установка пользователя в сессию через Secutiry contex
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(
-                                userDetails.getUsername(),userDetails.getPassword(),userDetails.getAuthorities()
+                                employee.getUsername(),employee.getPassword(),employee.getRoles()
                         );
                 usernamePasswordAuthenticationToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
-            filterChain.doFilter(request, response);
+
 
         }
+        filterChain.doFilter(request, response);
     }
 }

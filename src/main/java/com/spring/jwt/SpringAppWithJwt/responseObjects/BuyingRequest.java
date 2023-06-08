@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BuyingRequest {
-    int consumerid;
+    String name;
     int eventid;
     int amountoftickets;
 
