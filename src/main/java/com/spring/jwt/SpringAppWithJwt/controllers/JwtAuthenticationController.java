@@ -25,9 +25,14 @@ public class JwtAuthenticationController {
     public ResponseEntity<JwtResponse> authenticationUser(@RequestBody AuthenticationRequest authreq) throws UsernameNotFoundException{
         return ResponseEntity.ok(authenticationService.authentication(authreq.getUsername(),authreq.getPassword()));
     }
-    @PostMapping("/refreshAccessToken")
+    @PostMapping("/accessToken")
     public ResponseEntity<JwtResponse> getNewAccessToken(@RequestBody RefreshJwtRequest refreshJwtRequest){
         return authenticationService.generateAccessToken(refreshJwtRequest.getRefreshToken());
+
+    }
+    @PostMapping("/refreshAccessToken")
+    public ResponseEntity<JwtResponse> getNewRefreshToken(@RequestBody RefreshJwtRequest refreshJwtRequest){
+        return authenticationService.generateRefreshToken(refreshJwtRequest.getRefreshToken());
 
     }
     @ExceptionHandler

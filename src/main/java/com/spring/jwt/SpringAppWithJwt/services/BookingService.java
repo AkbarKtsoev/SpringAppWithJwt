@@ -51,6 +51,7 @@ public class BookingService {
         LocalDateTime localDateTime = LocalDateTime.of(year,month,date,00,00,00);
         e.setEventName(name);
         e.setLocalDateTime(localDateTime);
+
         for (int i = 0;i<amountofTickets;i++){
             Ticket t = new Ticket();
             t.setEvent(e);

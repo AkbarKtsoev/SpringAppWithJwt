@@ -18,11 +18,11 @@ public class Ticket {
     @Column(name = "id")
     private Integer id;
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "event_id",referencedColumnName = "id")
     private Event event;
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id",referencedColumnName = "id")
     private Employee owner;
     @Column(name = "price")

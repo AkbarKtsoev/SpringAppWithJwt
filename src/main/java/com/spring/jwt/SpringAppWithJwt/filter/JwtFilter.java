@@ -36,6 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String jwtToken;
         String username;
         if (token == null || !token.startsWith("Bearer ")) {
+
             filterChain.doFilter(request, response);
             return;
         }
@@ -45,8 +46,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (null != username && SecurityContextHolder.getContext().getAuthentication() == null) {
             Employee employee = (Employee) customUserDetailsService.loadUserByUsername(username);
-
-            if (jwtTokenService.validateAccessToken(jwtToken) && employee.getJwtRefreshToken() == jwtToken) {
+// && employee.getJwtRefreshToken() == jwtToken
+            if (jwtTokenService.validateAccessToken(jwtToken)) {
                 // Проверка и установка пользователя в сессию через Secutiry contex
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(

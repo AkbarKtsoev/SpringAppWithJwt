@@ -8,6 +8,7 @@ import com.spring.jwt.SpringAppWithJwt.services.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
@@ -19,21 +20,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ResourceController {
     private final BookingService bookingService;
+    @PreAuthorize("hasRole('USER')")
     @RequestMapping("/hellouser")
     public String helloUser(){
         return "Hello User";
     }
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping("/helloadmin")
     public String helloAdmin(){
         return "Hello admin";
     }
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @RequestMapping("/events")
     public List<EventResponse>events(){
         return bookingService.showAllEvents();
 
 
     }
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @RequestMapping("/events/{id}")
     public ResponseEntity<EventResponse> showEventById(@PathVariable("id") int id){
         return ResponseEntity.ok(bookingService.showEventById(id));
@@ -44,6 +48,7 @@ public class ResourceController {
         return ResponseEntity.ok(bookingService.createEvent(eventRequest.getName(),eventRequest.getDate(), eventRequest.getAmountOfTickets(), eventRequest.getTicketPrice()));
 
     }
+    @PreAuthorize("hasRole('USER') and hasRole('ADMIN')")
     @PostMapping("/events/free")
     public String freeTickets(){
         return String.valueOf(bookingService.freeTickets());
@@ -59,6 +64,12 @@ public class ResourceController {
     public ResponseEntity<EventNotFoundErrorResponse> checkException(EventNotFoundException u){
         EventNotFoundErrorResponse us = new EventNotFoundErrorResponse(u.getMessage());
         return new ResponseEntity<>(us,HttpStatus.NOT_FOUND);
+
+    }
+    @ExceptionHandler
+    public ResponseEntity<EventNotFoundErrorResponse> checkException(AccessDeniedException u){
+        EventNotFoundErrorResponse us = new EventNotFoundErrorResponse(u.getMessage());
+        return new ResponseEntity<>(us,HttpStatus.FORBIDDEN);
 
     }
 

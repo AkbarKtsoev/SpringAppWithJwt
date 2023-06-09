@@ -41,9 +41,7 @@ public class SpringConfiguration {
         http.csrf().disable()
                 .authorizeHttpRequests().antMatchers("/api/ar/authentication","/api/ar/registration")
                 .permitAll()
-                .and()
-                .authorizeHttpRequests()
-
+                .anyRequest().authenticated()
 //                .authorizeHttpRequests().antMatchers("/api/ar/registration")
 //                .permitAll()
 //                .antMatchers("/hellouser")

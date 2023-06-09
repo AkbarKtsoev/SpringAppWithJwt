@@ -34,12 +34,13 @@ public class JwtTokenService {
         return Jwts.builder().setSubject(userDetails.getUsername())
                 .claim("roles",userDetails.getAuthorities())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 60*5))
+                .setExpiration(new Date(System.currentTimeMillis() + 60*60 * 5000))
                 .signWith(jwtAccessSecret).compact();
     }
     public String generateRefreshToken(@NonNull UserDetails userDetails){
         return Jwts.builder().setSubject(userDetails.getUsername())
-                .setExpiration(new Date(System.currentTimeMillis()+ 100000 * 60 * 60))
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 5000) )
                 .signWith(jwtRefreshSecret)
                 .compact();
     }
